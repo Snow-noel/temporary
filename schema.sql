@@ -4,7 +4,7 @@ CREATE TABLE Person (
     FirstName VARCHAR(50) NOT NULL,
     LastName VARCHAR(50) NOT NULL,
     DateOfBirth DATE NOT NULL,
-    Gender ENUM('Male','Female') NOT NULL
+    Gender VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE District (
@@ -103,21 +103,58 @@ CREATE TABLE Vote (
     FOREIGN KEY (PollingStationID) REFERENCES PollingStation(PollingStationID),
     UNIQUE(VoterID, ElectionID) 
 );
-
--- View for election results
-CREATE VIEW ElectionResults AS
-SELECT 
-    e.ElectionID,
-    e.ElectionType,
-    c.CandidateID,
-    p.FirstName,
-    p.LastName,
-    pp.PartyName,
-    COUNT(v.VoteID) AS TotalVotes
-FROM Vote v
-JOIN CandidateElection ce ON v.CandidateElectionID = ce.CandidateElectionID
-JOIN Candidate c ON ce.CandidateID = c.CandidateID
-JOIN Person p ON c.PersonalID = p.PersonalID
-LEFT JOIN PoliticalParty pp ON c.PartyID = pp.PartyID
-JOIN Election e ON ce.ElectionID = e.ElectionID
-GROUP BY e.ElectionID, c.CandidateID;
+CREATE TABLE ElectionOfficial (
+    OfficialID INT PRIMARY KEY AUTO_INCREMENT,
+    FullName VARCHAR(100) NOT NULL,
+    Role ENUM('Presiding Officer','Clerk','Security') NOT NULL,
+    PollingStationID INT NOT NULL,
+    FOREIGN KEY (PollingStationID) REFERENCES PollingStation(PollingStationID)
+);
+CREATE TABLE Ballot (
+    BallotID INT PRIMARY KEY AUTO_INCREMENT,
+    ElectionID INT NOT NULL,
+    PollingStationID INT NOT NULL,
+    IssuedToVoterID INT NOT NULL,
+    IssuedTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ElectionID) REFERENCES Election(ElectionID),
+    FOREIGN KEY (PollingStationID) REFERENCES PollingStation(PollingStationID),
+    FOREIGN KEY (IssuedToVoterID) REFERENCES Voter(VoterID),
+    UNIQUE (IssuedToVoterID, ElectionID) -- prevent duplicate ballot issuance
+);
+CREATE TABLE ElectionComplaint (
+    ComplaintID INT PRIMARY KEY AUTO_INCREMENT,
+    ElectionID INT NOT NULL,
+    FiledBy VARCHAR(100) NOT NULL,
+    Description TEXT NOT NULL,
+    Status ENUM('Pending','Reviewed','Resolved') DEFAULT 'Pending',
+    FiledDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ElectionID) REFERENCES Election(ElectionID)
+);
+CREATE TABLE ElectionAudit (
+    AuditID INT PRIMARY KEY AUTO_INCREMENT,
+    ElectionID INT NOT NULL,
+    AuditDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Description TEXT,
+    FOREIGN KEY (ElectionID) REFERENCES Election(ElectionID)
+);
+CREATE TABLE PartyOffice (
+    OfficeID INT PRIMARY KEY AUTO_INCREMENT,
+    PartyID INT NOT NULL,
+    Location VARCHAR(255) NOT NULL, 
+    DistrictID INT NOT NULL,
+    FOREIGN KEY (PartyID) REFERENCES PoliticalParty(PartyID),
+    FOREIGN KEY (DistrictID) REFERENCES District(DistrictID)
+);
+CREATE TABLE Campaign (
+    CampaignID INT PRIMARY KEY AUTO_INCREMENT,
+    CandidateID INT NOT NULL,
+    StartDate DATE NOT NULL,
+    EndDate DATE NOT NULL,
+    Budget DECIMAL(12,2),
+    FOREIGN KEY (CandidateID) REFERENCES Candidate(CandidateID)
+);
+CREATE TABLE SecurityForce (
+    ForceID INT PRIMARY KEY AUTO_INCREMENT,
+    ForceName ENUM('Police','Army','Other') NOT NULL,
+    ContactInfo VARCHAR(150)
+);

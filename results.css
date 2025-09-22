@@ -1,0 +1,39 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.nav-bar{
+    max-width: 100%;
+    min-width: 100%;
+    display: flex;
+    justify-content: space-around;
+     flex-wrap: wrap;
+     margin: 2rem 3rem;
+}
+.h2{
+    margin-top: 1rem;
+}
+.links{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 2rem;
+    height: 4rem;
+    padding: 1rem;
+}
+a{
+    color: red;
+    text-decoration: none;
+    
+}
+.h1{
+    color: red;
+}
+.active{
+    background-color: green;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+}
