@@ -47,9 +47,15 @@ CREATE TABLE PollingStation (
 CREATE TABLE Voter (
     VoterID INT PRIMARY KEY AUTO_INCREMENT,
     PersonalID INT UNIQUE NOT NULL,
+    VoterRegistrationNumber VARCHAR(30) UNIQUE NOT NULL,
+    Status ENUM('Registered','Not Registered') NOT NULL,
+    RegistrationDate DATE NOT NULL,
+    Category VARCHAR(50),
     ConstituencyID INT NOT NULL,
+    WardID INT,
     FOREIGN KEY (PersonalID) REFERENCES Person(PersonalID),
-    FOREIGN KEY (ConstituencyID) REFERENCES Constituency(ConstituencyID)
+    FOREIGN KEY (ConstituencyID) REFERENCES Constituency(ConstituencyID),
+    FOREIGN KEY (WardID) REFERENCES Ward(WardID)
 );
 
 -- political party table
