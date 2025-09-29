@@ -125,17 +125,9 @@ CREATE TABLE Ballot (
     FOREIGN KEY (ElectionID) REFERENCES Election(ElectionID),
     FOREIGN KEY (PollingStationID) REFERENCES PollingStation(PollingStationID),
     FOREIGN KEY (IssuedToVoterID) REFERENCES Voter(VoterID),
-    UNIQUE (IssuedToVoterID, ElectionID) -- prevent duplicate ballot issuance
+    UNIQUE (IssuedToVoterID, ElectionID)
 );
-CREATE TABLE ElectionComplaint (
-    ComplaintID INT PRIMARY KEY AUTO_INCREMENT,
-    ElectionID INT NOT NULL,
-    FiledBy VARCHAR(100) NOT NULL,
-    Description TEXT NOT NULL,
-    Status ENUM('Pending','Reviewed','Resolved') DEFAULT 'Pending',
-    FiledDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (ElectionID) REFERENCES Election(ElectionID)
-);
+
 CREATE TABLE ElectionAudit (
     AuditID INT PRIMARY KEY AUTO_INCREMENT,
     ElectionID INT NOT NULL,
@@ -143,22 +135,7 @@ CREATE TABLE ElectionAudit (
     Description TEXT,
     FOREIGN KEY (ElectionID) REFERENCES Election(ElectionID)
 );
-CREATE TABLE PartyOffice (
-    OfficeID INT PRIMARY KEY AUTO_INCREMENT,
-    PartyID INT NOT NULL,
-    Location VARCHAR(255) NOT NULL, 
-    DistrictID INT NOT NULL,
-    FOREIGN KEY (PartyID) REFERENCES PoliticalParty(PartyID),
-    FOREIGN KEY (DistrictID) REFERENCES District(DistrictID)
-);
-CREATE TABLE Campaign (
-    CampaignID INT PRIMARY KEY AUTO_INCREMENT,
-    CandidateID INT NOT NULL,
-    StartDate DATE NOT NULL,
-    EndDate DATE NOT NULL,
-    Budget DECIMAL(12,2),
-    FOREIGN KEY (CandidateID) REFERENCES Candidate(CandidateID)
-);
+
 CREATE TABLE SecurityForce (
     ForceID INT PRIMARY KEY AUTO_INCREMENT,
     ForceName ENUM('Police','Army','Other') NOT NULL,
