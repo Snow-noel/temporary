@@ -109,6 +109,7 @@ CREATE TABLE Vote (
     FOREIGN KEY (PollingStationID) REFERENCES PollingStation(PollingStationID),
     UNIQUE(VoterID, ElectionID) 
 );
+
 CREATE TABLE ElectionOfficial (
     OfficialID INT PRIMARY KEY AUTO_INCREMENT,
     FullName VARCHAR(100) NOT NULL,
@@ -116,6 +117,7 @@ CREATE TABLE ElectionOfficial (
     PollingStationID INT NOT NULL,
     FOREIGN KEY (PollingStationID) REFERENCES PollingStation(PollingStationID)
 );
+
 CREATE TABLE Ballot (
     BallotID INT PRIMARY KEY AUTO_INCREMENT,
     ElectionID INT NOT NULL,
@@ -126,14 +128,6 @@ CREATE TABLE Ballot (
     FOREIGN KEY (PollingStationID) REFERENCES PollingStation(PollingStationID),
     FOREIGN KEY (IssuedToVoterID) REFERENCES Voter(VoterID),
     UNIQUE (IssuedToVoterID, ElectionID)
-);
-
-CREATE TABLE ElectionAudit (
-    AuditID INT PRIMARY KEY AUTO_INCREMENT,
-    ElectionID INT NOT NULL,
-    AuditDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    Description TEXT,
-    FOREIGN KEY (ElectionID) REFERENCES Election(ElectionID)
 );
 
 CREATE TABLE SecurityForce (
